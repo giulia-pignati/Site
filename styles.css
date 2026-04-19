@@ -15,6 +15,7 @@
 
   --space-4: 4px;
   --space-8: 8px;
+  --space-12: 12px;
   --space-16: 16px;
   --space-24: 24px;
   --space-32: 32px;
@@ -600,35 +601,211 @@ img {
 /* =====================
    RESPONSIVE
    ===================== */
-@media (max-width: 680px) {
+/* =====================
+   RESPONSIVE — TABLET (max 860px)
+   ===================== */
+@media (max-width: 860px) {
+
+  /* Cards: 2col → 1col, imagem sobe */
   .case-card {
     grid-template-columns: 1fr;
+    padding: var(--space-32);
+    gap: var(--space-24);
   }
 
   .case-card-image {
     order: -1;
   }
 
-  .about-body {
-    grid-template-columns: 1fr;
+  /* Tipografia um pouco menor */
+  .case-card-content h2 {
+    font-size: 22px;
+  }
+
+  .case-metrics {
+    margin-bottom: var(--space-32);
+  }
+
+  /* About: foto full width */
+  .about-photo img {
+    width: 100%;
+  }
+}
+
+/* =====================
+   RESPONSIVE — MOBILE (max 600px)
+   ===================== */
+@media (max-width: 600px) {
+
+  /* --- NAV --- */
+  .nav {
+    padding: 12px var(--space-16);
   }
 
   .nav-links {
+    gap: var(--space-12);
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .nav-links .btn-primary {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  /* --- HERO --- */
+  .hero {
+    padding: var(--space-48) var(--space-16) var(--space-48);
+  }
+
+  .hero-text h1 {
+    font-size: clamp(38px, 11vw, 56px);
+    letter-spacing: -1.5px;
+    margin-bottom: var(--space-16);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    margin-bottom: var(--space-32);
+  }
+
+  /* Botões empilhados, full width */
+  .hero-actions {
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .hero-actions .btn-secondary,
+  .hero-actions .btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* --- WORK --- */
+  .work {
+    padding: 0 var(--space-16) var(--space-48);
     gap: var(--space-16);
+  }
+
+  .case-card {
+    padding: var(--space-24);
+    border-radius: var(--radius-md);
+  }
+
+  .case-tag {
+    font-size: 10px;
+  }
+
+  .case-card-content h2 {
+    font-size: 18px;
+    margin-bottom: var(--space-16);
+  }
+
+  .case-card-content p {
+    font-size: 14px;
+    margin-bottom: var(--space-16);
+  }
+
+  .case-metrics {
+    gap: var(--space-16);
+    margin-bottom: var(--space-24);
+  }
+
+  .metric-value {
+    font-size: 20px;
+  }
+
+  .metric-label {
+    font-size: 11px;
+  }
+
+  /* --- ABOUT --- */
+  .about {
+    padding: var(--space-48) var(--space-16);
+  }
+
+  .about-doodle img {
+    height: 90px;
+  }
+
+  .about-headline h2 {
+    font-size: clamp(26px, 8vw, 38px);
+    letter-spacing: -1px;
+  }
+
+  .about-headline p {
+    font-size: 15px;
+  }
+
+  .about-body {
+    margin-top: var(--space-32);
+  }
+
+  /* --- STILL HERE --- */
+  .still-here {
+    padding: var(--space-48) var(--space-16) var(--space-48);
   }
 
   .still-here-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--space-16);
+    margin-bottom: var(--space-32);
+  }
+
+  .still-here-header h2 {
+    font-size: clamp(30px, 9vw, 44px);
+  }
+
+  .still-here-header p {
+    font-size: 15px;
   }
 
   .smile-doodle {
-    height: 80px;
+    height: 72px;
+    align-self: center;
+    margin-top: -12px;
+  }
+
+  /* Content cards: padding menor, fonte menor */
+  .content-list {
+    gap: var(--space-8);
   }
 
   .content-card {
-    padding: var(--space-16) var(--space-24);
+    padding: var(--space-16) var(--space-16);
+    gap: var(--space-12);
+  }
+
+  .content-title {
+    font-size: 15px;
+  }
+
+  .content-label {
+    font-size: 10px;
+  }
+
+  .author-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .author-name {
+    font-size: 12px;
+  }
+
+  .author-pub {
+    font-size: 11px;
+  }
+
+  .content-arrow-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  /* --- FOOTER --- */
+  .footer {
+    padding: var(--space-24) var(--space-16);
+    font-size: 12px;
   }
 }

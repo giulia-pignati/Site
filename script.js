@@ -80,3 +80,28 @@ contentItems.forEach((item, i) => {
   item.style.transition = `opacity 0.4s ease ${i * 0.06}s, transform 0.4s ease ${i * 0.06}s`;
   contentObserver.observe(item);
 });
+
+// =====================
+// BURGER MENU
+// =====================
+const burger = document.querySelector('.nav-burger');
+const navMenu = document.querySelector('.nav-links');
+
+if (burger && navMenu) {
+  burger.addEventListener('click', () => {
+    const isOpen = burger.classList.toggle('open');
+    navMenu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  // Fecha ao clicar em qualquer link
+  navMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      burger.classList.remove('open');
+      navMenu.classList.remove('open');
+      burger.setAttribute('aria-expanded', false);
+      document.body.style.overflow = '';
+    });
+  });
+}

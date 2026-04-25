@@ -22,11 +22,8 @@
       height: calc(100vh - 61px);
     }
 
-    /* Nav — conteúdo alinhado ao max-width, divider full width */
+    /* Nav — border only, padding handled per breakpoint */
     .nav {
-      max-width: 100% !important;
-      padding-left: calc((100vw - 1200px) / 2 + var(--space-24));
-      padding-right: calc((100vw - 1200px) / 2 + var(--space-24));
       border-bottom: 1px solid var(--color-border);
     }
 
@@ -494,46 +491,55 @@
     }
 
     /* ---- RESPONSIVE ---- */
-    body { overflow: hidden; }
+
+    /* =====================
+       DESKTOP ONLY (>1024px)
+       Locked scroll, two-column layout
+       ===================== */
+    @media (min-width: 1025px) {
+      body { overflow: hidden; }
+
+      /* max() ensures padding never goes below 24px even on screens <1200px */
+      .nav {
+        max-width: 100% !important;
+        padding-left: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
+        padding-right: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
+      }
+    }
 
     /* =====================
        TABLET (≤1024px)
-       Sidebar moves to bottom, single column, normal page scroll
-       Desktop layout untouched above 1024px
+       Single column, sidebar at bottom, normal scroll
        ===================== */
     @media (max-width: 1024px) {
 
-      /* Restore normal page scroll */
-      body { overflow: auto; }
+      body { overflow: auto !important; }
 
-      /* Nav: remove dynamic padding calc, use fixed padding */
       .nav {
         max-width: 100% !important;
         padding-left: var(--space-24) !important;
         padding-right: var(--space-24) !important;
       }
 
-      /* Page: single column, sidebar goes below main */
       .cs-page {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
         gap: 0;
         height: auto;
-        padding: 0 var(--space-24) var(--space-96);
         max-width: 720px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 var(--space-24) var(--space-96);
+        box-sizing: border-box;
       }
 
-      /* Main: restore normal flow */
       .cs-main {
         height: auto;
         overflow-y: visible;
         padding-top: var(--space-48);
         padding-bottom: var(--space-64);
-        /* Make sure main comes first */
         order: 1;
       }
 
-      /* Sidebar: goes to bottom, no sticky, no border-left */
       .cs-sidebar {
         order: 2;
         position: static;
@@ -544,73 +550,50 @@
         padding-left: 0;
         padding-top: var(--space-48);
         padding-bottom: var(--space-64);
-        /* Two-column layout for sidebar content on tablet */
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-32);
         align-items: start;
       }
 
-      /* Sidebar author spans full width */
       .cs-sidebar-author {
         grid-column: 1 / -1;
         border-bottom: 1px solid var(--color-border);
         padding-bottom: var(--space-24);
-        margin-bottom: 0;
       }
 
-      /* Remove individual block borders — grid handles spacing */
-      .cs-sidebar-block {
-        border-bottom: none;
-        padding-bottom: 0;
-      }
+      .cs-sidebar-block { border-bottom: none; padding-bottom: 0; }
 
-      /* Other cases block spans full width */
       .cs-sidebar-block:last-child {
         grid-column: 1 / -1;
         border-top: 1px solid var(--color-border);
         padding-top: var(--space-24);
       }
 
-      /* Image grid stays 2 cols on tablet */
-      .cs-img-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      /* Metrics side by side */
-      .cs-result-metrics {
-        gap: var(--space-32);
-      }
-
-      /* Nav bottom buttons stay row */
-      .cs-nav {
-        flex-direction: row;
-        align-items: center;
-      }
+      .cs-img-grid { grid-template-columns: 1fr 1fr; }
+      .cs-result-metrics { gap: var(--space-32); }
+      .cs-nav { flex-direction: row; align-items: center; }
     }
 
     /* =====================
        MOBILE (≤640px)
-       Everything stacks, larger touch targets
+       Everything stacks, full width
        ===================== */
     @media (max-width: 640px) {
 
-      /* Prevent any horizontal overflow */
-      body {
-        overflow-x: hidden;
-      }
+      body { overflow-x: hidden !important; }
 
-      /* Reset nav padding on mobile */
       .nav {
-        padding-left: var(--space-16) !important;
-        padding-right: var(--space-16) !important;
+        padding-left: var(--space-24) !important;
+        padding-right: var(--space-24) !important;
       }
 
       .cs-page {
-        padding: 0 var(--space-24) var(--space-64);
         max-width: 100%;
-        margin: 0;
         width: 100%;
+        margin: 0;
+        padding: 0 var(--space-24) var(--space-64);
+        box-sizing: border-box;
       }
 
       .cs-main {
@@ -618,59 +601,25 @@
         padding-bottom: var(--space-48);
       }
 
-      /* Sidebar back to single column on mobile */
       .cs-sidebar {
         grid-template-columns: 1fr;
         padding-top: var(--space-32);
       }
 
-      .cs-sidebar-block:last-child {
-        grid-column: 1;
-      }
+      .cs-sidebar-block:last-child { grid-column: 1; }
+      .cs-persona { grid-template-columns: 1fr; }
+      .cs-img-grid { grid-template-columns: 1fr; }
 
-      /* Persona stacks vertically */
-      .cs-persona {
-        grid-template-columns: 1fr;
-      }
+      .cs-result-metrics { flex-direction: column; gap: var(--space-24); }
+      .cs-result-metrics .metric-value { font-size: 40px; }
 
-      /* Image grid stacks to 1 col */
-      .cs-img-grid {
-        grid-template-columns: 1fr;
-      }
+      .cs-section h2 { font-size: 24px; }
+      .cs-callout { font-size: 18px !important; }
 
-      /* Smaller metric numbers */
-      .cs-result-metrics {
-        flex-direction: column;
-        gap: var(--space-24);
-      }
-      .cs-result-metrics .metric-value {
-        font-size: 40px;
-      }
+      .cs-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      /* Section titles smaller */
-      .cs-section h2 {
-        font-size: 24px;
-      }
-
-      /* Callout smaller */
-      .cs-callout {
-        font-size: 18px !important;
-      }
-
-      /* Table scrollable on small screens */
-      .cs-table-wrap {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      /* Nav links stack on very small screens */
-      .cs-nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-16);
-      }
+      .cs-nav { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
     }
-
 
   </style>
 </head>

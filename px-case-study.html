@@ -22,10 +22,43 @@
       height: calc(100vh - 61px);
     }
 
-    /* Nav — border only, padding handled per breakpoint */
-    .nav {
+    /* ---- NAV BAR — fully independent from styles.css ---- */
+    .cs-nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--space-16) var(--space-24);
+      background: var(--color-bg);
       border-bottom: 1px solid var(--color-border);
+      box-sizing: border-box;
     }
+
+    .cs-nav-bar-logo img {
+      height: 28px;
+      width: auto;
+    }
+
+    .cs-nav-bar-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-32);
+      list-style: none;
+    }
+
+    .cs-nav-bar-links a {
+      font-size: 16px;
+      color: var(--color-text);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .cs-nav-bar-links a:hover { opacity: 0.6; }
+
+    .cs-nav-bar-burger { display: none; }
 
     /* Main — scrolls independently */
     .cs-main {
@@ -500,7 +533,7 @@
       body { overflow: hidden; }
 
       /* max() ensures padding never goes below 24px even on screens <1200px */
-      .nav {
+      .cs-nav-bar {
         max-width: 100% !important;
         padding-left: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
         padding-right: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
@@ -515,7 +548,7 @@
 
       body { overflow: auto !important; }
 
-      .nav {
+      .cs-nav-bar {
         max-width: 100% !important;
         padding-left: var(--space-24) !important;
         padding-right: var(--space-24) !important;
@@ -583,10 +616,53 @@
 
       body { overflow-x: hidden !important; }
 
-      .nav {
+      .cs-nav-bar {
         padding-left: var(--space-24) !important;
         padding-right: var(--space-24) !important;
       }
+
+      /* Show burger, hide links by default */
+      .cs-nav-bar-burger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        z-index: 200;
+      }
+
+      .cs-nav-bar-burger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--color-text);
+        border-radius: 2px;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+        transform-origin: center;
+      }
+
+      .cs-nav-bar-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .cs-nav-bar-burger.open span:nth-child(2) { opacity: 0; }
+      .cs-nav-bar-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      .cs-nav-bar-links {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: var(--color-bg);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-32);
+        z-index: 150;
+      }
+
+      .cs-nav-bar-links.open { display: flex; }
+      .cs-nav-bar-links a { font-size: 24px; font-weight: 400; }
+      .cs-nav-bar-links .btn-primary { font-size: 16px; padding: 12px 28px; }
 
       .cs-page {
         max-width: 100%;
@@ -601,24 +677,16 @@
         padding-bottom: var(--space-48);
       }
 
-      .cs-sidebar {
-        grid-template-columns: 1fr;
-        padding-top: var(--space-32);
-      }
-
+      .cs-sidebar { grid-template-columns: 1fr; padding-top: var(--space-32); }
       .cs-sidebar-block:last-child { grid-column: 1; }
       .cs-persona { grid-template-columns: 1fr; }
       .cs-img-grid { grid-template-columns: 1fr; }
-
       .cs-result-metrics { flex-direction: column; gap: var(--space-24); }
       .cs-result-metrics .metric-value { font-size: 40px; }
-
       .cs-section h2 { font-size: 24px; }
       .cs-callout { font-size: 18px !important; }
-
       .cs-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-      .cs-nav { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
+      .cs-bottom-nav { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
     }
 
   </style>
@@ -626,14 +694,14 @@
 <body>
 
   <!-- NAV -->
-  <nav class="nav">
-    <a href="index.html" class="nav-logo">
+  <nav class="cs-nav-bar">
+    <a href="index.html" class="cs-nav-bar-logo">
       <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-nav-bar.png" alt="giu" />
     </a>
-    <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+    <button class="cs-nav-bar-burger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-    <ul class="nav-links">
+    <ul class="cs-nav-bar-links">
       <li><a href="index.html#work">Work</a></li>
       <li><a href="index.html#about">About</a></li>
       <li><a href="https://drive.google.com/file/d/1Y1DbGItEBMNiPdERlwueBXyd4NhTwN-2/view?usp=sharing" target="_blank" rel="noopener">Resume</a></li>
@@ -911,5 +979,26 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Burger for case study nav (uses different class names from index.html)
+    const csBurger = document.querySelector('.cs-nav-bar-burger');
+    const csNavLinks = document.querySelector('.cs-nav-bar-links');
+    if (csBurger && csNavLinks) {
+      csBurger.addEventListener('click', () => {
+        const isOpen = csBurger.classList.toggle('open');
+        csNavLinks.classList.toggle('open');
+        csBurger.setAttribute('aria-expanded', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+      csNavLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          csBurger.classList.remove('open');
+          csNavLinks.classList.remove('open');
+          csBurger.setAttribute('aria-expanded', false);
+          document.body.style.overflow = '';
+        });
+      });
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PX System — Giulia Pignati</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* Wrapper that fills viewport below nav */
+    .cs-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-24) 0;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 140px;
+      align-items: start;
+      /* Makes sticky work correctly */
+      height: calc(100vh - 61px);
+    }
+
+    /* Nav — conteúdo alinhado ao max-width, divider full width */
+    .nav {
+      max-width: 100% !important;
+      padding-left: calc((100vw - 1200px) / 2 + var(--space-24));
+      padding-right: calc((100vw - 1200px) / 2 + var(--space-24));
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    /* Main — scrolls independently */
+    .cs-main {
+      padding-top: var(--space-64);
+      padding-bottom: var(--space-96);
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .cs-main::-webkit-scrollbar { display: none; }
+
+    /* Sidebar — fixed in place, does not scroll with main */
+    .cs-sidebar {
+      position: sticky;
+      top: 0;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      border-left: 1px solid var(--color-border);
+      padding-left: var(--space-48);
+      padding-top: var(--space-64);
+      padding-bottom: var(--space-64);
+      scrollbar-width: none;
+    }
+    .cs-sidebar::-webkit-scrollbar { display: none; }
+
+    /* ---- BACK LINK ---- */
+    .cs-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-48);
+      transition: color 0.2s ease;
+    }
+    .cs-back:hover { color: var(--color-text); }
+
+    /* ---- TITLE ---- */
+    .cs-title-block { margin-bottom: var(--space-48); }
+
+    .cs-title-block h1 {
+      font-size: clamp(40px, 5vw, 60px);
+      font-weight: 500;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: var(--space-16);
+      display: inline-block;
+    }
+
+    .cs-title-accent {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background: var(--color-accent);
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      position: relative;
+      top: 10px;
+    }
+
+    .cs-subtitle {
+      font-size: 17px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    /* ---- COVER ---- */
+    .cs-cover { margin-bottom: var(--space-64); }
+    .cs-cover img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-lg);
+    }
+
+    /* ---- SECTIONS ---- */
+    .cs-section { margin-bottom: var(--space-64); }
+
+    .cs-section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      margin-bottom: var(--space-16);
+    }
+    .cs-section-label::before { content: '—'; }
+
+    .cs-section h2 {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: var(--space-24);
+      color: #2a2a2a;
+    }
+
+    .cs-section p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.85;
+      margin-bottom: var(--space-16);
+    }
+    .cs-section p:last-child { margin-bottom: 0; }
+    .cs-section p strong { color: var(--color-text); font-weight: 600; }
+
+    /* ---- BULLET LIST (fix 1: context formatting) ---- */
+    .cs-list {
+      margin: var(--space-8) 0 var(--space-16) var(--space-24);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .cs-list li {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    .cs-ol {
+      margin: var(--space-8) 0 var(--space-16) var(--space-24);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      list-style: decimal;
+    }
+    .cs-ol li {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.8;
+      padding-left: var(--space-8);
+    }
+
+    /* ---- QUOTE ---- */
+    .cs-quote {
+      border-left: 3px solid var(--color-accent);
+      padding: var(--space-16) var(--space-24);
+      margin: var(--space-32) 0;
+      background: #fafaf8;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .cs-quote p {
+      font-size: 17px;
+      font-style: italic;
+      color: var(--color-text);
+      line-height: 1.6;
+      margin: 0 !important;
+    }
+
+    /* ---- IMAGES — no border/stroke (fix 2) ---- */
+    .cs-img { margin: var(--space-16) 0; border-radius: var(--radius-md); overflow: hidden; }
+    .cs-img img { width: 100%; height: auto; display: block; }
+
+    /* Caption — plain text below, left-aligned, no bg */
+    .cs-img-caption {
+      font-size: 13px!important;
+      color: var(#6a6a6a);
+      margin-top: var(--space-8);
+      text-align: left;
+    }
+
+    /* 2-column image grid */
+    .cs-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-16);
+      margin: var(--space-48) 0;
+    }
+
+    .cs-img-grid .cs-img {
+      margin: 0;
+    }
+
+    /* Discovery block — imagem + legenda com mais espaço embaixo */
+    .cs-discovery-block {
+      margin-bottom: var(--space-96);
+    }
+
+    /* ---- PERSONA — two columns (fix 3) ---- */
+    .cs-persona {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: var(--space-32);
+      margin: var(--space-32) 0;
+      align-items: start;
+    }
+
+    .cs-persona-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .cs-persona-card img { width: 100%; height: auto; display: block; }
+
+    .cs-persona-traits { padding: var(--space-16); }
+    .cs-persona-traits ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cs-persona-traits li {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+    }
+    .cs-persona-traits li::before { content: '→ '; color: var(--color-text-muted); }
+
+    .cs-persona-right { display: flex; flex-direction: column; justify-content: center; }
+
+    .cs-persona-right .cs-persona-quote {
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      color: var(--color-text) !important;
+      line-height: 1.35 !important;
+      margin-bottom: var(--space-8) !important;
+      letter-spacing: -0.4px !important;
+    }
+
+    .cs-persona-right .cs-persona-quote-attr {
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      color: var(--color-text-muted) !important;
+      margin-bottom: var(--space-24) !important;
+    }
+
+    /* ---- DIVIDER ---- */
+    .cs-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: var(--space-64) 0;
+    }
+
+    /* ---- RESULT METRICS — no card (fix 5) ---- */
+    .cs-result-metrics {
+      display: flex;
+      gap: var(--space-64);
+      margin: var(--space-32) 0 var(--space-48);
+    }
+    .cs-result-metrics .metric-value {
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -3px;
+      line-height: 1;
+      display: block;
+    }
+    .cs-result-metrics .metric-label {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* Big highlight callout — larger font, bold */
+    .cs-callout {
+      font-size: 22px !important;
+      font-weight: 700 !important;
+      color: var(--color-text) !important;
+      line-height: 1.4 !important;
+      margin: var(--space-24) 0 !important;
+    }
+
+    /* Feature block — bold title + description */
+    .cs-feature { margin-bottom: var(--space-24); }
+    .cs-feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+    .cs-feature-desc {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    /* Extra spacing around images in solution */
+    .cs-img-spaced {
+      margin: var(--space-48) 0 !important;
+    }
+
+    /* Result table */
+    .cs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--space-64);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      margin: var(--space-32) 0;
+    }
+    .cs-table th, .cs-table td {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 15px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cs-table th { font-weight: 600; color: var(--color-text); background: var(--color-surface); }
+    .cs-table td { color: #333; background: var(--color-surface); }
+    .cs-table tr:last-child td { border-bottom: none; }
+    .cs-table td:first-child { font-weight: 500; color: var(--color-text); }
+
+    /* ---- NAV ---- */
+    .cs-nav {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-48);
+      border-top: 1px solid var(--color-border);
+    }
+    .cs-nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+      transition: opacity 0.2s ease;
+    }
+    .cs-nav a:hover { opacity: 0.6; }
+
+    /* ---- SIDEBAR ---- */
+    .cs-sidebar-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-16);
+      padding-bottom: var(--space-24);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cs-sidebar-author img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .cs-sidebar-author-info { font-size: 15px; line-height: 1.4; }
+    .cs-sidebar-author-info .first-line { display: block; font-weight: 400; color: var(--color-text); white-space: nowrap; }
+    .cs-sidebar-author-info .first-line a { color: var(--color-text); font-weight: 400; text-decoration: underline; text-underline-offset: 2px; }
+    .cs-sidebar-author-info .role { font-size: 14px; color: var(--color-text-muted); display: block; font-weight: 400; }
+
+    .cs-sidebar-block {
+      padding-bottom: var(--space-24);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cs-sidebar-block:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .cs-sidebar-block-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-16);
+    }
+
+    .cs-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .cs-tags-wrap:last-child { margin-bottom: 0; }
+
+    .cs-pill {
+      font-size: 13px;
+      color: var(--color-text);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      line-height: 1;
+    }
+
+    .cs-other-case {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      padding-top: var(--space-16);
+    }
+
+    .cs-other-case-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cs-other-case-meta img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .cs-other-case-meta span {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .cs-other-case-meta span a {
+      color: var(--color-text-muted);
+      font-weight: 400;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .cs-other-case h3 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .cs-other-case .cs-other-desc {
+      font-size: 18px;
+      color: #333;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .cs-other-case .cs-other-meta-foot {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin: 24;
+    }
+
+    .cs-other-case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.cs-other-case-link .cs-other-case-text {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+    
+
+    .arrow-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      font-size: 16px;
+      flex-shrink: 0;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    body { overflow: hidden; }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .cs-page { grid-template-columns: 1fr; gap: var(--space-48); height: auto; }
+      .cs-main { height: auto; overflow-y: visible; }
+      .cs-sidebar { position: static; order: -1; height: auto; overflow-y: visible; border-left: none; border-bottom: 1px solid var(--color-border); padding-left: 0; padding-bottom: var(--space-32); }
+      .nav { padding-left: var(--space-24); padding-right: var(--space-24); }
+    }
+      .cs-result-metrics { gap: var(--space-32); }
+      .cs-nav { align-items: center; }
+    }
+    @media (max-width: 600px) {
+      .cs-persona { grid-template-columns: 1fr; }
+      .cs-result-metrics .metric-value { font-size: 40px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-nav-bar.png" alt="giu" />
+    </a>
+    <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="https://drive.google.com/file/d/1Y1DbGItEBMNiPdERlwueBXyd4NhTwN-2/view?usp=sharing" target="_blank" rel="noopener">Resume</a></li>
+      <li><a href="mailto:giuliapignati@gmail.com" class="btn-primary">Contact me</a></li>
+    </ul>
+  </nav>
+
+  <div class="cs-page">
+
+    <!-- MAIN -->
+    <main class="cs-main">
+
+      <a href="index.html#work" class="cs-back">← Back to work</a>
+
+      <div class="cs-title-block">
+        <h1><span class="cs-title-accent"></span>Px System</h1>
+        <p class="cs-subtitle">Transforming lead qualification into real results</p>
+      </div>
+
+      <div class="cs-cover">
+        <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/px-cover.png" alt="PX System interface" />
+      </div>
+
+      <!-- CONTEXT -->
+      <section class="cs-section">
+        <p class="cs-section-label">The Context</p>
+        <h2>What Does It Do?</h2>
+        <p>PX is an internal platform built to guide producers, insurance agents, through the sales process. Its first and most critical step: <strong>lead qualification.</strong></p>
+        <p>Producers received leads from multiple sources:</p>
+        <ul class="cs-list">
+          <li>The self-service quote form</li>
+          <li>Inbound calls</li>
+          <li>Cold calls.</li>
+        </ul>
+        <p>Leads coming through the quote form arrived already qualified and quoted, producers only needed to close. But for inbound and cold calls, the dynamic was different. <strong>And that's where the bottleneck lived.</strong></p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- PROBLEM -->
+      <section class="cs-section">
+        <p class="cs-section-label">The Problem</p>
+        <h2>Why It Matters</h2>
+        <p>When working inbound or cold calls, producers had two options:</p>
+        <ol class="cs-ol">
+          <li>Share a quote form link</li>
+          <li>Quote the lead directly.</li>
+        </ol>
+        <p>Most preferred to quote directly, since keeping the lead on the phone increased engagement and improved conversion rates.</p>
+        <p>But quoting directly required completing a long form, and eligibility was only confirmed after submission. Once submitted, the request would go to the quoting team, with response times of up to 60 minutes.</p>
+        <p><strong>This meant producers were investing time upfront without knowing if the lead was even eligible. In practice, time was being spent before value was guaranteed.</strong></p>
+        <p>This raised a key question:</p>
+        <div class="cs-quote">
+          <p>"Could we pre-screen eligibility before the quote form is completed?"</p>
+        </div>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- USER -->
+      <section class="cs-section">
+        <p class="cs-section-label">The user</p>
+        <h2>Who It Impacted</h2>
+        <p>To understand how producers actually worked, I traveled to North Carolina with the PM for an on-site research sprint, shadowing calls, interviewing producers, and mapping their tools and workflows.</p>
+
+        <div class="cs-discovery-block">
+          <div class="cs-img">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/px-discovery.png" alt="Field research in North Carolina" />
+          </div>
+          <p class="cs-img-caption">1. On-site sprint in North Carolina / 2. User journey based on shadowing and interviews</p>
+        </div>
+
+        <!-- Persona — two columns -->
+        <div class="cs-persona">
+          <div class="cs-persona-card">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/px-persona.png" alt="Producer persona" />
+            <div class="cs-persona-traits">
+              <ul>
+                <li>Performance-driven</li>
+                <li>Time = revenue</li>
+                <li>Momentum-sensitive</li>
+                <li>Prefers direct engagement</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-persona-right">
+            <p class="cs-persona-quote">"For a producer, every minute spent on a non-qualified lead is a minute not spent closing a deal."</p>
+            <p class="cs-persona-quote-attr">- Daniel, insurance expert.</p>
+            <p class="cs-section" style="margin:0; font-size:16px; color:#333; line-height:1.85;">When on a call, momentum matters. Sending a link breaks the flow. Quoting directly keeps the lead engaged. Producers chose <u>the longer path</u> because sharing a link with a lead that is actively shopping around felt like losing them entirely.</p>
+            <p style="font-size:16px; color:#333; line-height:1.85; margin-top: 16px;">Any solution would have to fit inside the rhythm of a live call. Fast enough to run with a lead on the line. Simple enough not to disrupt the conversation.</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- DIAGNOSIS -->
+      <section class="cs-section">
+        <p class="cs-section-label">Diagnosis</p>
+        <h2>What We Know</h2>
+        <p>The on-site research made the root cause clear</p>
+        <p><strong>Qualification was happening at the wrong stage. Producers were wasting time with non-qualified leads</strong></p>
+        <p>The on-site research gave us the raw material. I translated the findings into a storyboard that was used to align leadership on the problem before any solution was proposed.</p>
+
+        <div class="cs-img-grid">
+          <div class="cs-img">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/storyboard-1.png" alt="Storyboard frame 1" />
+          </div>
+          <div class="cs-img">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/storyboard-2.png" alt="Storyboard frame 2" />
+          </div>
+          <div class="cs-img">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/storyboard-3.png" alt="Storyboard frame 3" />
+          </div>
+          <div class="cs-img">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/storyboard-4.png" alt="Storyboard frame 4" />
+          </div>
+        </div>
+
+        <p>With the problem diagnosed and leadership aligned, the direction was clear.</p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- SOLUTION -->
+      <section class="cs-section">
+        <p class="cs-section-label">Solution</p>
+        <h2>How We Solved It</h2>
+        <p>The core question:</p>
+        <p class="cs-callout">What's the minimum information needed to confirm eligibility, fast enough to work during a live call?</p>
+        <p>I worked with engineering to understand what was technically feasible during a live call. <strong>The 7-input model</strong> came out of that collaboration, the minimum data needed to run an eligibility check using DOT infrastructure already integrated in the platform.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/px-ui.png" alt="PX System UI — pre-qualification flow" />
+        </div>
+
+        <div class="cs-feature">
+          <p class="cs-feature-title">Instant eligibility check</p>
+          <p class="cs-feature-desc">Producers input a DOT number and 6 additional data points. Within ~10 seconds, the system confirms if the lead is eligible. No long form. No waiting for the quoting team. Built on DOT infrastructure already integrated into the platform.</p>
+        </div>
+
+        <div class="cs-feature">
+          <p class="cs-feature-title">Form submission only after qualification</p>
+          <p class="cs-feature-desc">The quote form only appears after eligibility is confirmed. Producers invest time knowing the lead is worth it.</p>
+        </div>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- RESULT -->
+      <section class="cs-section">
+        <p class="cs-section-label">Result</p>
+        <h2>What is the impact?</h2>
+        <p>Launched in 2024. The impact was immediate and measurable.</p>
+
+        <div class="cs-result-metrics">
+          <div>
+            <span class="metric-value">-93%</span>
+            <span class="metric-label">Qualification time</span>
+          </div>
+          <div>
+            <span class="metric-value">100%</span>
+            <span class="metric-label">Leads validated pre-form</span>
+          </div>
+        </div>
+
+        <table class="cs-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Before Px</th>
+              <th>After Px</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Qualification time</td>
+              <td>12min</td>
+              <td>1min</td>
+              <td>-93%</td>
+            </tr>
+            <tr>
+              <td>Leads validated before form</td>
+              <td>9%</td>
+              <td>100%</td>
+              <td>+91%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Beyond the time metrics, the change had downstream effects: the number of proposals submitted per week increased, and so did closed sales. Producers responded positively. Direct feedback confirmed they trusted the new flow and preferred it over the previous process.</p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- ROLE -->
+      <section class="cs-section">
+        <p class="cs-section-label">My Role</p>
+        <h2>What Was I Responsible For?</h2>
+        <p>My role was to lead the design end-to-end, from understanding the problem in the field to shipping the final flow. I collaborated with engineering on feasibility and owned the UX and UI of the final qualification flow. The PM and I made product decisions together. Engineering validated technical viability. Leadership approved the direction. Design, research, synthesis, framing, and interaction were all mine to drive.</p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- CONCLUSION -->
+      <section class="cs-section">
+        <p class="cs-section-label">Conclusion</p>
+        <h2>The Takeaway</h2>
+        <p>This project reinforced something I keep coming back to: the most valuable design decisions aren't always about the interface. Here, the real work was diagnostic, identifying that the problem wasn't the form, it was the sequence. Fixing the flow only mattered because we first understood why producers behaved the way they did. That's the part that doesn't show up in screenshots.</p>
+        <p><strong>What I'd do differently?</strong></p>
+        <p>I would invest more time testing edge cases before launch, specifically scenarios where eligibility status could return incorrect results. At scale, even rare errors created friction for producers and eroded trust in the tool. Earlier stress testing would have reduced post-launch fixes and accelerated adoption.</p>
+      </section>
+
+      <div class="cs-nav">
+        <a href="index.html#work">← Back to all work</a>
+        <a href="#">Next case study →</a>
+      </div>
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="cs-sidebar">
+
+      <div class="cs-sidebar-author">
+        <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-case-avatar.png" alt="Giulia Pignati" />
+        <div class="cs-sidebar-author-info">
+          <span class="first-line">Real case for <a href="https://www.logrock.com/" target="_blank">LogRock</a></span>
+          <span class="role">Sole Designer</span>
+        </div>
+      </div>
+
+      <div class="cs-sidebar-block">
+        <p class="cs-sidebar-block-label">Tools &amp; Methods</p>
+        <div class="cs-tags-wrap">
+          <span class="cs-pill">Figma</span>
+          <span class="cs-pill">Miro</span>
+          <span class="cs-pill">Linear</span>
+          <span class="cs-pill">Slack</span>
+          <span class="cs-pill">Notion</span>
+          <span class="cs-pill">In-depth interviews</span>
+          <span class="cs-pill">Field shadowing</span>
+          <span class="cs-pill">Workflow mapping</span>
+          <span class="cs-pill">Storyboarding</span>
+          <span class="cs-pill">Rapid prototyping</span>
+          <span class="cs-pill">Ideation workshops</span>
+        </div>
+      </div>
+
+      <div class="cs-sidebar-block">
+        <p class="cs-sidebar-block-label">Other Cases</p>
+        <a href="#" class="cs-other-case">
+          <div class="cs-other-case-meta">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-case-avatar.png" alt="Giulia" />
+            <span>Real case for LogRock</span>
+          </div>
+          <h3>Scaling Sales Without Hiring</h3>
+          <p class="cs-other-desc">The Quote Form Redesign. A self-service form built to eliminate phone calls</p>
+          <p class="cs-other-meta-foot">12 min read · Nov 26, 2025</p>
+          <span class="cs-other-case-link">
+            <span class="cs-other-case-text">Read case study</span>
+<span class="arrow-circle">→</span>
+          </span>
+        </a>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2024 Giulia Pignati · Product Designer</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

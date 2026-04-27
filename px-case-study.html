@@ -689,6 +689,60 @@
       .cs-bottom-nav { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
     }
 
+    /* ---- IMAGE MODAL ---- */
+    .cs-img img, .cs-img-3col-item img {
+      cursor: zoom-in;
+      transition: opacity 0.2s ease;
+    }
+    .cs-img img:hover, .cs-img-3col-item img:hover { opacity: 0.9; }
+
+    .img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-32);
+      cursor: zoom-out;
+    }
+
+    .img-modal.open { display: flex; }
+
+    .img-modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      border-radius: var(--radius-lg);
+      object-fit: contain;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+      cursor: default;
+    }
+
+    .img-modal-close {
+      position: fixed;
+      top: var(--space-24);
+      right: var(--space-24);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 1001;
+    }
+    .img-modal-close:hover { background: rgba(255,255,255,0.3); }
+
   </style>
 </head>
 <body>
@@ -955,7 +1009,7 @@
 
       <div class="cs-sidebar-block">
         <p class="cs-sidebar-block-label">Other Cases</p>
-        <a href="#" class="cs-other-case">
+        <a href="quote-form-case-study.html" class="cs-other-case">
           <div class="cs-other-case-meta">
             <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-case-avatar.png" alt="Giulia" />
             <span>Real case for LogRock</span>
@@ -978,9 +1032,15 @@
     <p>© 2024 Giulia Pignati · Product Designer</p>
   </footer>
 
+  <!-- IMAGE MODAL -->
+  <div class="img-modal" id="imgModal">
+    <button class="img-modal-close" id="imgModalClose">✕</button>
+    <img src="" id="imgModalImg" alt="" />
+  </div>
+
   <script src="script.js"></script>
   <script>
-    // Burger for case study nav (uses different class names from index.html)
+    // Burger for case study nav
     const csBurger = document.querySelector('.cs-nav-bar-burger');
     const csNavLinks = document.querySelector('.cs-nav-bar-links');
     if (csBurger && csNavLinks) {
@@ -998,6 +1058,29 @@
           document.body.style.overflow = '';
         });
       });
+    }
+
+    // Image modal
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('imgModalImg');
+    const modalClose = document.getElementById('imgModalClose');
+
+    document.querySelectorAll('.cs-img img, .cs-img-3col-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    modalClose.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
     }
   </script>
 </body>

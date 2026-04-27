@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quote Form Redesign — Giulia Pignati</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* =====================
+       SHARED LAYOUT — identical to px-case-study
+       ===================== */
+    .cs-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-24) 0;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 140px;
+      align-items: start;
+      height: calc(100vh - 61px);
+    }
+
+    .nav {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .cs-main {
+      padding-top: var(--space-64);
+      padding-bottom: var(--space-96);
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .cs-main::-webkit-scrollbar { display: none; }
+
+    .cs-sidebar {
+      position: sticky;
+      top: 0;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      border-left: 1px solid var(--color-border);
+      padding-left: var(--space-48);
+      padding-top: var(--space-64);
+      padding-bottom: var(--space-64);
+      scrollbar-width: none;
+    }
+    .cs-sidebar::-webkit-scrollbar { display: none; }
+
+    /* =====================
+       SHARED COMPONENTS — same as px-case-study
+       ===================== */
+    .cs-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-48);
+      transition: color 0.2s ease;
+    }
+    .cs-back:hover { color: var(--color-text); }
+
+    .cs-title-block { margin-bottom: var(--space-48); }
+    .cs-title-block h1 {
+      font-size: clamp(40px, 5vw, 60px);
+      font-weight: 500;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: var(--space-16);
+      display: inline-block;
+    }
+
+    .cs-title-accent {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background: var(--color-accent);
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      position: relative;
+      top: 10px;
+    }
+
+    .cs-subtitle {
+      font-size: 17px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    .cs-cover { margin-bottom: var(--space-64); }
+    .cs-cover img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-lg);
+    }
+
+    .cs-section { margin-bottom: var(--space-64); }
+
+    .cs-section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      margin-bottom: var(--space-16);
+    }
+    .cs-section-label::before { content: '—'; }
+
+    .cs-section h2 {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: var(--space-24);
+      color: #2a2a2a;
+    }
+
+    .cs-section p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.85;
+      margin-bottom: var(--space-16);
+    }
+    .cs-section p:last-child { margin-bottom: 0; }
+    .cs-section p strong { color: var(--color-text); font-weight: 600; }
+
+    .cs-ol {
+      margin: var(--space-8) 0 var(--space-16) var(--space-24);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      list-style: decimal;
+    }
+    .cs-ol li {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.8;
+      padding-left: var(--space-8);
+    }
+
+    .cs-img { margin: var(--space-16) 0; border-radius: var(--radius-md); overflow: hidden; }
+    .cs-img img { width: 100%; height: auto; display: block; }
+
+    .cs-img-caption {
+      font-size: 13px !important;
+      color: var(--color-text-muted);
+      margin-top: var(--space-8);
+      text-align: left;
+    }
+
+    .cs-img-spaced { margin: var(--space-48) 0 !important; }
+
+    .cs-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-16);
+      margin: var(--space-48) 0;
+    }
+    .cs-img-grid .cs-img { margin: 0; }
+
+    .cs-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: var(--space-64) 0;
+    }
+
+    .cs-callout {
+      font-size: 22px !important;
+      font-weight: 700 !important;
+      color: var(--color-text) !important;
+      line-height: 1.4 !important;
+      margin: var(--space-24) 0 !important;
+    }
+
+    .cs-feature { margin-bottom: var(--space-24); }
+    .cs-feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+    .cs-feature-desc {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    .cs-result-metrics {
+      display: flex;
+      gap: var(--space-64);
+      margin: var(--space-32) 0 var(--space-48);
+    }
+    .cs-result-metrics .metric-value {
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -3px;
+      line-height: 1;
+      display: block;
+    }
+    .cs-result-metrics .metric-label {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      display: block;
+    }
+
+    .cs-table-wrap { overflow-x: auto; }
+    .cs-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      margin: var(--space-32) 0 var(--space-64);
+    }
+    .cs-table th, .cs-table td {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 15px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cs-table th { font-weight: 600; color: var(--color-text); background: var(--color-surface); }
+    .cs-table td { color: #333; background: var(--color-surface); }
+    .cs-table tr:last-child td { border-bottom: none; }
+    .cs-table td:first-child { font-weight: 500; color: var(--color-text); }
+
+    .cs-nav {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-48);
+      border-top: 1px solid var(--color-border);
+    }
+    .cs-nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+      transition: opacity 0.2s ease;
+    }
+    .cs-nav a:hover { opacity: 0.6; }
+
+    /* SIDEBAR — shared */
+    .cs-sidebar-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-16);
+      padding-bottom: var(--space-24);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cs-sidebar-author img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .cs-sidebar-author-info { font-size: 15px; line-height: 1.4; }
+    .cs-sidebar-author-info .first-line { display: block; font-weight: 400; color: var(--color-text); white-space: nowrap; }
+    .cs-sidebar-author-info .first-line a { color: var(--color-text); font-weight: 400; text-decoration: underline; text-underline-offset: 2px; }
+    .cs-sidebar-author-info .role { font-size: 14px; color: var(--color-text-muted); display: block; font-weight: 400; }
+
+    .cs-sidebar-block { padding-bottom: var(--space-24); border-bottom: 1px solid var(--color-border); }
+    .cs-sidebar-block:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .cs-sidebar-block-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-16);
+    }
+
+    .cs-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0; }
+
+    .cs-pill {
+      font-size: 13px;
+      color: var(--color-text);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      line-height: 1;
+    }
+
+    .cs-other-case { display: flex; flex-direction: column; gap: var(--space-16); padding-top: var(--space-16); }
+    .cs-other-case-meta { display: flex; align-items: center; gap: 10px; }
+    .cs-other-case-meta img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .cs-other-case-meta span { font-size: 13px; color: var(--color-text-muted); font-weight: 400; line-height: 1.4; }
+    .cs-other-case-meta span a { color: var(--color-text-muted); font-weight: 400; text-decoration: underline; text-underline-offset: 2px; }
+    .cs-other-case h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.25; color: var(--color-text); margin: 0; }
+    .cs-other-case .cs-other-desc { font-size: 18px; color: #333; line-height: 1.4; margin: 0; }
+    .cs-other-case .cs-other-meta-foot { font-size: 14px; color: var(--color-text-muted); }
+    .cs-other-case-link { display: inline-flex; align-items: center; gap: 16px; font-size: 15px; font-weight: 500; color: var(--color-text); text-decoration: none; }
+    .cs-other-case-link .cs-other-case-text { text-decoration: underline; text-underline-offset: 3px; }
+    .arrow-circle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--color-accent); font-size: 16px; flex-shrink: 0; text-decoration: none; color: var(--color-text); }
+
+    /* =====================
+       QUOTE FORM — UNIQUE COMPONENTS
+       ===================== */
+
+    /* Steps diagram — 3 cards with arrows */
+    .cs-steps {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: var(--space-8);
+      margin: var(--space-32) 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-32);
+    }
+
+    .cs-step {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      padding: var(--space-16);
+    }
+
+    .cs-step-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--color-accent);
+      color: var(--color-text);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      width: fit-content;
+    }
+
+    .cs-step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+
+    .cs-step-desc {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .cs-step-arrow {
+      font-size: 20px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    /* X-list — error items with red X */
+    .cs-x-list {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin: var(--space-24) 0;
+    }
+
+    .cs-x-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-16);
+      padding: var(--space-16) var(--space-24);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 15px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .cs-x-item:last-child { border-bottom: none; }
+
+    .cs-x-icon {
+      color: #e05a2b;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Green accent block — large statement */
+    .cs-accent-block {
+      background: var(--color-accent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-96) var(--space-48);
+      margin: var(--space-64) 0;
+      text-align: center;
+    }
+
+    .cs-accent-block .cs-accent-pre {
+      font-size: 15px;
+      color: rgba(0,0,0,0.6);
+      margin-bottom: var(--space-16);
+    }
+
+    .cs-accent-block .cs-accent-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.2;
+      letter-spacing: -1px;
+    }
+
+    .cs-accent-divider {
+      font-size: 18px;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: var(--space-24);
+      letter-spacing: 4px;
+    }
+
+    /* Persona card — quote form variant */
+    .cs-persona-qf {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin: var(--space-32) 0;
+    }
+
+    .cs-persona-qf-photo {
+      overflow: hidden;
+    }
+    .cs-persona-qf-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cs-persona-qf-content {
+      background: var(--color-surface);
+      padding: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+    }
+
+    .cs-persona-qf-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    .cs-persona-qf-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+
+    .cs-persona-qf-traits {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .cs-persona-qf-trait {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-12, 12px);
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .cs-persona-qf-trait-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--color-text-muted);
+      margin-top: 1px;
+      font-size: 14px;
+    }
+
+    /* Original form screenshot container */
+    .cs-screenshot-container {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      margin: var(--space-32) 0;
+    }
+
+    .cs-screenshot-label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-16);
+    }
+
+    .cs-screenshot-caption {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: var(--space-16);
+      font-style: italic;
+    }
+
+    /* Sub-heading inside section */
+    .cs-subheading {
+      font-size: 17px !important;
+      font-weight: 700 !important;
+      color: var(--color-text) !important;
+      margin-top: var(--space-32) !important;
+      margin-bottom: var(--space-8) !important;
+    }
+
+    /* 3-column image layout for solution screens */
+    .cs-img-3col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-16);
+      margin: var(--space-32) 0;
+    }
+
+    .cs-img-3col-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .cs-img-3col-caption {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .cs-img-3col-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+
+    /* =====================
+       RESPONSIVE
+       ===================== */
+    @media (min-width: 1025px) {
+      body { overflow: hidden; }
+      .nav {
+        max-width: 100% !important;
+        padding-left: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
+        padding-right: max(var(--space-24), calc((100vw - 1200px) / 2 + var(--space-24))) !important;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      body { overflow: auto !important; }
+      .nav { max-width: 100% !important; padding-left: var(--space-24) !important; padding-right: var(--space-24) !important; }
+      .cs-page { grid-template-columns: 1fr; gap: 0; height: auto; max-width: 720px; width: 100%; margin: 0 auto; padding: 0 var(--space-24) var(--space-96); box-sizing: border-box; }
+      .cs-main { height: auto; overflow-y: visible; padding-top: var(--space-48); padding-bottom: var(--space-64); order: 1; }
+      .cs-sidebar { order: 2; position: static; height: auto; overflow-y: visible; border-left: none; border-top: 1px solid var(--color-border); padding-left: 0; padding-top: var(--space-48); padding-bottom: var(--space-64); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-32); align-items: start; }
+      .cs-sidebar-author { grid-column: 1 / -1; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-24); }
+      .cs-sidebar-block { border-bottom: none; padding-bottom: 0; }
+      .cs-sidebar-block:last-child { grid-column: 1 / -1; border-top: 1px solid var(--color-border); padding-top: var(--space-24); }
+      .cs-result-metrics { gap: var(--space-32); }
+      .cs-nav { flex-direction: row; align-items: center; }
+      .cs-steps { grid-template-columns: 1fr; gap: var(--space-16); }
+      .cs-step-arrow { transform: rotate(90deg); }
+    }
+
+    @media (max-width: 640px) {
+      body { overflow-x: hidden !important; }
+      .nav { padding-left: var(--space-24) !important; padding-right: var(--space-24) !important; }
+      .cs-page { max-width: 100%; width: 100%; margin: 0; padding: 0 var(--space-24) var(--space-64); box-sizing: border-box; }
+      .cs-main { padding-top: var(--space-32); padding-bottom: var(--space-48); }
+      .cs-sidebar { grid-template-columns: 1fr; padding-top: var(--space-32); }
+      .cs-sidebar-block:last-child { grid-column: 1; }
+      .cs-img-grid { grid-template-columns: 1fr; }
+      .cs-img-3col { grid-template-columns: 1fr; }
+      .cs-persona-qf { grid-template-columns: 1fr; }
+      .cs-result-metrics { flex-direction: column; gap: var(--space-24); }
+      .cs-result-metrics .metric-value { font-size: 40px; }
+      .cs-section h2 { font-size: 24px; }
+      .cs-accent-block { padding: var(--space-64) var(--space-24); }
+      .cs-nav { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
+    }
+
+    /* ---- IMAGE MODAL ---- */
+    .cs-img img, .cs-img-3col-item img {
+      cursor: zoom-in;
+      transition: opacity 0.2s ease;
+    }
+    .cs-img img:hover, .cs-img-3col-item img:hover { opacity: 0.9; }
+
+    .img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-32);
+      cursor: zoom-out;
+    }
+
+    .img-modal.open { display: flex; }
+
+    .img-modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      border-radius: var(--radius-lg);
+      object-fit: contain;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+      cursor: default;
+    }
+
+    .img-modal-close {
+      position: fixed;
+      top: var(--space-24);
+      right: var(--space-24);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 1001;
+    }
+    .img-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-nav-bar.png" alt="giu" />
+    </a>
+    <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="https://drive.google.com/file/d/1Y1DbGItEBMNiPdERlwueBXyd4NhTwN-2/view?usp=sharing" target="_blank" rel="noopener">Resume</a></li>
+      <li><a href="mailto:giuliapignati@gmail.com" class="btn-primary">Contact me</a></li>
+    </ul>
+  </nav>
+
+  <div class="cs-page">
+
+    <!-- MAIN -->
+    <main class="cs-main">
+
+      <a href="index.html#work" class="cs-back">← Back to work</a>
+
+      <!-- Title -->
+      <div class="cs-title-block">
+        <h1><span class="cs-title-accent"></span>Quote Form Redesign</h1>
+        <p class="cs-subtitle">Scaling sales without hiring</p>
+      </div>
+
+      <!-- Cover -->
+      <div class="cs-cover">
+        <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/case-quote-form.png" alt="Quote Form Redesign" />
+      </div>
+
+      <!-- CONTEXT -->
+      <section class="cs-section">
+        <p class="cs-section-label">Context</p>
+        <h2>The Set Up</h2>
+        <p>Logrock is a B2B insurtech company in the trucking insurance market. Their sales team had a costly bottleneck: producers, <strong>insurance agents</strong>, were spending too much time with non-qualified leads.</p>
+        <p>The sales workflow had three stages:</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/cards-steps.png" alt="Sales workflow — 3 touchpoints" />
+        </div>
+
+        <p>The goal was to scale revenue without growing headcount, and the first touchpoint was the obvious target. If producers only engaged at stage three, they could focus entirely on qualified leads.</p>
+        <p>The solution: a self-service quote form. Customers would fill it out independently, the quoting team would receive the data automatically, and producers would only engage to close the deal.</p>
+        <p><strong>The idea was good. But that wasn't happening in reality.</strong></p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- THE PROBLEM -->
+      <section class="cs-section">
+        <p class="cs-section-label">The Problem</p>
+        <h2>What Was Actually Happening</h2>
+        <p>Stats were</p>
+
+        <div class="cs-result-metrics">
+          <div>
+            <span class="metric-value">63%</span>
+            <span class="metric-label">Abandonment rate</span>
+          </div>
+          <div>
+            <span class="metric-value">25%</span>
+            <span class="metric-label">Completion rate</span>
+          </div>
+          <div>
+            <span class="metric-value">60%+</span>
+            <span class="metric-label">Of users on mobile<br />(no responsive version)</span>
+          </div>
+        </div>
+
+        <p>The form didn't eliminate phone calls. It multiplied them.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/x-table.png" alt="Problems with the form" />
+        </div>
+      </section>
+
+      <!-- GREEN ACCENT BLOCK -->
+      <div class="cs-accent-block">
+        <p class="cs-accent-divider">***</p>
+        <p class="cs-accent-title">But why were so many users<br />abandoning the form?</p>
+      </div>
+
+      <!-- THE USER -->
+      <section class="cs-section">
+        <p class="cs-section-label">The User</p>
+        <h2>Who Was Using This</h2>
+        <p>To answer that, we first needed to understand who was actually using it. Based on producer interviews, customer service conversations, and phone recordings:</p>
+
+        <div class="cs-persona-qf">
+          <div class="cs-persona-qf-photo">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/persona.png" alt="Truck owner persona" />
+          </div>
+          <div class="cs-persona-qf-content">
+            <p class="cs-persona-qf-label">They were</p>
+            <p class="cs-persona-qf-title">Independent truck owners &amp; small businesses.</p>
+            <div class="cs-persona-qf-traits">
+              <div class="cs-persona-qf-trait">
+                <span class="cs-persona-qf-trait-icon">💬</span>
+                <span><strong>Unfamiliar with insurance jargon:</strong> standard terms created confusion and incorrect entries</span>
+              </div>
+              <div class="cs-persona-qf-trait">
+                <span class="cs-persona-qf-trait-icon">$</span>
+                <span><strong>Shopping for rates:</strong> price was the #1 decision factor; they came for a number</span>
+              </div>
+              <div class="cs-persona-qf-trait">
+                <span class="cs-persona-qf-trait-icon">💻</span>
+                <span><strong>Not tech-savvy:</strong> unfamiliar with complex digital systems</span>
+              </div>
+              <div class="cs-persona-qf-trait">
+                <span class="cs-persona-qf-trait-icon">♡</span>
+                <span><strong>One goal:</strong> reach the quote</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>These users had intent. A landing page before the form acted as a natural filter, separating browsers from buyers. Those who started the form wanted rates.</p>
+        <p><strong>63% abandonment</strong> wasn't lack of interest. It was the form failing people who were actively trying to complete it.</p>
+      </section>
+
+      <!-- GREEN ACCENT BLOCK 2 -->
+      <div class="cs-accent-block">
+        <p class="cs-accent-pre">Understanding the user made the causes obvious:</p>
+        <p class="cs-accent-title">The form wasn't built for them.</p>
+      </div>
+
+      <hr class="cs-divider" />
+
+      <!-- DISCOVERY -->
+      <section class="cs-section">
+        <p class="cs-section-label">Discovery</p>
+        <h2>What I Found</h2>
+        <p>I went on-site to the agency in North Carolina with the PM, before forming any hypothesis. We combined on-site shadowing and producer interviews with Hotjar session recordings, customer phone recordings, and funnel data from Google Analytics and Mixpanel.</p>
+
+        <p>From a user perspective, the experience felt confusing and overwhelming. Users struggled to understand what they were filling out due to the use of insurance jargon, which often led to uncertainty and hesitation during completion. Many users either abandoned the form midway or rushed through it just to reach the final call.</p>
+        <p>This confusion was compounded by a lack of structure. The form was long, not logically segmented, and not properly optimized for mobile. As a result, over 60% of users accessing it via mobile dropped off, while the remaining users experienced friction due to poor information architecture and lack of orientation within the flow.</p>
+        <p>These two issues directly impacted data quality. Even when users completed the form, submissions often contained errors or missing information, which required follow-up calls to correct or validate the data. This created inefficiencies in the downstream process and increased operational overhead.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/layers-123.png" alt="Root cause diagram — 3 layers" />
+        </div>
+
+        <p>What emerged from analysis was that these were not separate problems, but interconnected ones: lack of clarity led to misunderstanding, poor structure increased cognitive load and fatigue, and both contributed to rushed or incomplete submissions, resulting in low-quality data and additional operational friction.</p>
+
+        <div class="cs-screenshot-container">
+          <p class="cs-screenshot-label">Previous Original Form</p>
+          <div class="cs-img" style="margin:0;">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/original-form.png" alt="Original quote form screenshot" />
+          </div>
+          <p class="cs-screenshot-caption">*Screenshot from the real form.</p>
+        </div>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- SOLUTION -->
+      <section class="cs-section">
+        <p class="cs-section-label">The Solution</p>
+        <h2>How I Solved it</h2>
+        <p>The redesign addressed these issues as a connected system rather than isolated problems, focusing on three key areas: clarity, structure, and data quality.</p>
+
+        <p class="cs-subheading">Clarity</p>
+        <p>To improve clarity, all insurance terminology was replaced or supplemented with plain-language explanations, ensuring that even first-time users without prior knowledge could complete the form independently. Conditional logic was also introduced so that users only saw questions relevant to their specific situation, reducing unnecessary complexity and visual noise.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/plain-language.png" alt="Plain language clarity screens" />
+        </div>
+
+        <p class="cs-subheading">Structure</p>
+        <p>To improve structure, the form was broken into smaller easier to digest chunks, and reorganized into four logical sections: Business, Equipment, Drivers, and Coverage. Each section became its own step, creating a clearer flow and helping users understand where they were in the process at all times. In addition, the experience was redesigned with a mobile-first approach to address the high drop-off rate on mobile devices.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/structure-simple.png" alt="Structure — mobile-first redesign" />
+        </div>
+
+        <p class="cs-subheading">Data Quality</p>
+        <p>To improve data quality, autofill integrations were implemented using external compliance systems, allowing key information such as addresses, DBA names, incorporation dates, and equipment details to be automatically populated via DOT or VIN numbers.</p>
+        <p>I also integrated Google Maps to streamline address entry, as users were required to input the garage address repeatedly when adding new trucks. This reduced redundant manual input and minimized errors.</p>
+        <p>Step-level validation was also introduced, with inline and plain-language error messages that prevented users from advancing with missing or invalid fields.</p>
+
+        <div class="cs-img cs-img-spaced">
+          <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/integration-DOT.png" alt="DOT integration and data quality screens" />
+        </div>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- RESULT -->
+      <section class="cs-section">
+        <p class="cs-section-label">The Impact</p>
+        <h2>What Changed</h2>
+        <p>Launched October 2024. Measured January 2025, 3 months post-launch, via Mixpanel, Hotjar, and AgencyZoom.</p>
+
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Before</th>
+                <th>After</th>
+                <th>Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Completion rate</td>
+                <td>35%</td>
+                <td>67%</td>
+                <td>+89% improvement</td>
+              </tr>
+              <tr>
+                <td>Time per lead</td>
+                <td>~30 min</td>
+                <td>9–12 min</td>
+                <td>70% time reduction</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>200+ conditional paths live in production at logrock.com since October 2024.</p>
+        <p>Producers stopped being support agents for a broken form. They became closers again.</p>
+      </section>
+
+      <hr class="cs-divider" />
+
+      <!-- CONCLUSION -->
+      <section class="cs-section">
+        <p class="cs-section-label">Conclusion</p>
+        <h2>The Takeaway</h2>
+        <p>The idea behind the form was good. What was missing was execution that respected the real user, not the expert who built it. When the form started speaking the user's language, working on their device, and protecting the data it collected, it finally delivered what the business was looking for.</p>
+        <p><strong>What I'd do differently?</strong></p>
+        <p>I'd pursue direct access to end users earlier in discovery. The research was strong with producers and domain experts, but limited with the truck owners actually filling out the form. Some edge cases that emerged post-launch could have been caught earlier with usability testing directly with users before launch.</p>
+      </section>
+
+      <div class="cs-nav">
+        <a href="index.html#work">← Back to all work</a>
+        <a href="px-case-study.html">Next case study →</a>
+      </div>
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="cs-sidebar">
+
+      <div class="cs-sidebar-author">
+        <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-case-avatar.png" alt="Giulia Pignati" />
+        <div class="cs-sidebar-author-info">
+          <span class="first-line">Real case for <a href="https://www.logrock.com/" target="_blank">LogRock</a></span>
+          <span class="role">Sole Designer</span>
+        </div>
+      </div>
+
+      <div class="cs-sidebar-block">
+        <p class="cs-sidebar-block-label">Tools &amp; Methods</p>
+        <div class="cs-tags-wrap">
+          <span class="cs-pill">Figma</span>
+          <span class="cs-pill">Miro</span>
+          <span class="cs-pill">Linear</span>
+          <span class="cs-pill">Slack</span>
+          <span class="cs-pill">Notion</span>
+          <span class="cs-pill">In-depth interviews</span>
+          <span class="cs-pill">Field shadowing</span>
+          <span class="cs-pill">Workflow mapping</span>
+          <span class="cs-pill">Storyboarding</span>
+          <span class="cs-pill">Rapid prototyping</span>
+          <span class="cs-pill">Ideation workshops</span>
+        </div>
+      </div>
+
+      <div class="cs-sidebar-block">
+        <p class="cs-sidebar-block-label">Other Cases</p>
+        <a href="px-case-study.html" class="cs-other-case">
+          <div class="cs-other-case-meta">
+            <img src="https://raw.githubusercontent.com/giulia-pignati/portfolio/main/images/giu-case-avatar.png" alt="Giulia" />
+            <span>Real case for LogRock</span>
+          </div>
+          <h3>PX System: Lead qualification</h3>
+          <p class="cs-other-desc">I designed a pre-qualification system that validated 100% of leads in only 1 minute</p>
+          <p class="cs-other-meta-foot">8 min read · Jan 17, 2025</p>
+          <span class="cs-other-case-link">
+            <span class="cs-other-case-text">Read case study</span>
+            <span class="arrow-circle">→</span>
+          </span>
+        </a>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2024 Giulia Pignati · Product Designer</p>
+  </footer>
+
+  <!-- IMAGE MODAL -->
+  <div class="img-modal" id="imgModal">
+    <button class="img-modal-close" id="imgModalClose">✕</button>
+    <img src="" id="imgModalImg" alt="" />
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Image modal
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('imgModalImg');
+    const modalClose = document.getElementById('imgModalClose');
+
+    document.querySelectorAll('.cs-img img, .cs-img-3col-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    modalClose.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  </script>
+</body>
+</html>

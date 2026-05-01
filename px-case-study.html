@@ -546,7 +546,7 @@
        ===================== */
     @media (max-width: 1024px) {
 
-      body { overflow: auto !important; }
+      body { overflow: visible !important; }
 
       .cs-nav-bar {
         max-width: 100% !important;
@@ -555,9 +555,9 @@
       }
 
       .cs-page {
-        grid-template-columns: 1fr;
-        gap: 0;
-        height: auto;
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+        height: auto !important;
         max-width: 720px;
         width: 100%;
         margin: 0 auto;
@@ -567,6 +567,7 @@
 
       .cs-main {
         height: auto;
+        min-width: 0;
         overflow-y: visible;
         padding-top: var(--space-48);
         padding-bottom: var(--space-64);
@@ -614,7 +615,8 @@
        ===================== */
     @media (max-width: 640px) {
 
-      body { overflow-x: hidden !important; }
+      body { overflow-x: clip !important; }
+      .cs-cover img { border-radius: var(--radius-lg) !important; }
 
       .cs-nav-bar {
         padding-left: var(--space-24) !important;

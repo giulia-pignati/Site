@@ -561,10 +561,10 @@
     }
 
     @media (max-width: 1024px) {
-      body { overflow: auto !important; }
+      body { overflow: visible !important; }
       .nav { max-width: 100% !important; padding-left: var(--space-24) !important; padding-right: var(--space-24) !important; }
-      .cs-page { grid-template-columns: 1fr; gap: 0; height: auto; max-width: 720px; width: 100%; margin: 0 auto; padding: 0 var(--space-24) var(--space-96); box-sizing: border-box; }
-      .cs-main { height: auto; overflow-y: visible; padding-top: var(--space-48); padding-bottom: var(--space-64); order: 1; }
+      .cs-page { grid-template-columns: 1fr !important; gap: 0 !important; height: auto !important; max-width: 720px; width: 100%; margin: 0 auto; padding: 0 var(--space-24) var(--space-96); box-sizing: border-box; }
+      .cs-main { height: auto; overflow-y: visible; padding-top: var(--space-48); padding-bottom: var(--space-64); order: 1; min-width: 0; }
       .cs-sidebar { order: 2; position: static; height: auto; overflow-y: visible; border-left: none; border-top: 1px solid var(--color-border); padding-left: 0; padding-top: var(--space-48); padding-bottom: var(--space-64); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-32); align-items: start; }
       .cs-sidebar-author { grid-column: 1 / -1; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-24); }
       .cs-sidebar-block { border-bottom: none; padding-bottom: 0; }
@@ -576,8 +576,9 @@
     }
 
     @media (max-width: 640px) {
-      body { overflow-x: hidden !important; }
+      body { overflow-x: clip !important; }
       .nav { padding-left: var(--space-24) !important; padding-right: var(--space-24) !important; }
+      .cs-cover img { border-radius: var(--radius-lg) !important; }
       .cs-page { max-width: 100%; width: 100%; margin: 0; padding: 0 var(--space-24) var(--space-64); box-sizing: border-box; }
       .cs-main { padding-top: var(--space-32); padding-bottom: var(--space-48); }
       .cs-sidebar { grid-template-columns: 1fr; padding-top: var(--space-32); }
